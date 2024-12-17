@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Coleta</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/formulario.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <a href="{% url 'index' %}">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="logo">
+        </a>
+        <nav>
+            <ul class="menu">
+                <li><a href="{% url 'index' %}">Home</a></li>
+                <li><a href="{% url 'dicas' %}">Dicas de Reciclagem</a></li>
+                <li><a href="{% url 'parceiros' %}">Endereços de Coleta</a></li>
+                <li><a href="#">Sobre Nós</a></li>
+                <span style="padding-right: 434px;"></span>
+            </ul>
+        </nav>
+    </header>
+    <h1>Cadastro de Coleta</h1>
+
+    <div id="messageModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="modalMessage"></div>
+        </div>
+    </div>
+    
+    <form method="post" action="{% url 'cadastro' %}">
+        {% csrf_token %}
+        
+        <h3>Endereço</h3>
+        <div class="input-group">
+            {{ form.rua }}
+        </div>
+        <div class="input-group">
+            {{ form.numero }} <!-- Campo de número -->
+        </div>
+        <div class="input-group">
+            {{ form.bairro }}
+        </div>
+
+        <h3>Materiais</h3>
+        <div class="form-checkbox-group">
+            {% for material in form.materiais %}
+                <div class="form-checkbox">
+                    <label for="{{ material.id_for_label }}">{{ material }}</label> <!-- Checkbox -->
+                </div>
+            {% endfor %}
+        </div>
+
+        <h3>Dias de Coleta</h3>
+        <div class="form-checkbox-group">
+            {% for dia in form.dias %}
+                <div class="form-checkbox">
+                    <label for="{{ dia.id_for_label }}">{{ dia }}</label> <!-- Checkbox -->
+                </div>
+            {% endfor %}
+        </div>
+
+        <h3>Turno</h3>
+        <div class="form-radio-group">
+            {% for turno in form.turno %}
+                <div class="form-radio">
+                    <label for="{{ turno.id_for_label }}">{{ turno }}</label> <!-- Radio -->
+                </div>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn-enviar">Enviar</button>
+
+    </form>
+    
+    <script>
+        // Lógica para exibir mensagens
+        function showModal(message, isSuccess) {
+            var modal = document.getElementById("messageModal");
+            var modalMessage = document.getElementById("modalMessage");
+            modalMessage.innerHTML = message;
+            modal.style.display = "block";
+            modal.style.backgroundColor = isSuccess ? "#d4edda" : "#f8d7da";
+        }
+
+        document.querySelector(".close").onclick = function() {
+            document.getElementById("messageModal").style.display = "none";
+        }
+        window.onclick = function(event) {
+            if (event.target == document.getElementById("messageModal")) {
+                document.getElementById("messageModal").style.display = "none";
+            }
+        }
+        {% if messages %}
+            {% for message in messages %}
+                showModal("{{ message }}", "{{ message.tags }}" == "success");
+            {% endfor %}
+        {% endif %}
+    </script>
+    <footer>
+        <p>&copy; 2024 Recicla Aracati. Todos os direitos reservados aos alunos do 2 ano integrado, IFCE Aracati.</p>
+        <div class="social-icons">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-facebook"></i>
+            </a>
+            <a href="https://wa.me" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-whatsapp"></i>
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-instagram"></i>
+            </a>
+        </div>
+    </footer>
+</body>
+</html>
